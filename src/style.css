@@ -1,0 +1,115 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: cornflowerblue;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    /* padding: 1rem; */
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    /* padding: 1rem; */
+}
+
+.search-form {
+    display: flex;
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    gap: 5px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline-color: silver;
+    background-color: rgba(204, 204, 204, 0.7);
+}
+
+button[type="submit"] {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    color: black;
+    background-color: gray;
+
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.photo-card {
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(204, 204, 204, 0.7);
+}
+
+
+
+
+.photo-card img {
+    max-width: 100%;
+    border-radius: 5px;
+
+}
+
+.photo-card img:hover {
+    transform: scale(1.2);
+    transition: transform 0.3s ease;
+}
+
+.load-more {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.load-more:hover {
+    color: black;
+    background-color: gray;
+
+}
+
+
+.info {
+    margin-top: 10px;
+    display: flex;
+
+}
+
+.info-item {
+    margin: 5px 0;
+    font-size: 11px;
+
+
+}
