@@ -11,8 +11,9 @@ const API_KEY = '39807884-ce16e485562f7e433cd996b10';
 // const result = await axios.get("https://pixabay.com/api/?key=39807884-ce16e485562f7e433cd996b10");
 
 let page = 1;
-
 let currentQuery = '';
+let totalHits = 0;
+let firstSearch = true;
 //створюємо пошук зображень в бібліотеці
 export const fetchImages = async (searchQuery, page) => {
     try {
@@ -36,6 +37,13 @@ export const fetchImages = async (searchQuery, page) => {
             Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px' });
             return;
         }
+        totalHits = data.totalHits;
+        if (firstSearch) {
+            
+            Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+            firstSearch = false;
+        }
+
         const imageListHTML = createImgList(data.hits); //отримуємо з api каталог img
         return imageListHTML; //виводимо в розмітку
     } catch (error) {
@@ -45,11 +53,13 @@ export const fetchImages = async (searchQuery, page) => {
 }
 
 
+
+
 function createImgList(arr) {
     return arr.map(item => `
         <div class="photo-card">
             <a href="${item.largeImageURL}" data-lightbox="image">
-                <img src="${item.webformatURL}" alt="${item.tags}" loading="lazy" />
+                <img src="${item.webformatURL}" width="500" alt="${item.tags}" loading="lazy" />
             </a>
             <div class="info">
                 <p class="info-item"><b>Likes</b> ${item.likes}</p>

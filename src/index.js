@@ -1,11 +1,12 @@
 import { fetchImages } from './img-api';
-
+// import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 let currentPage = 1; // Початкова сторінка
 const imagesPerPage = 40; // Кількість зображень на сторінці
+let totalLoadedImagesCount = 0; // Лічильник завантажених зображень
 
 export const selectors = {
     searchForm: document.getElementById('search-form'),
@@ -14,11 +15,7 @@ export const selectors = {
     }
 
 selectors.loadMoreBtn.style.display = 'none';
-    
-
-// Змінні для керування сторінкою і поточним запитом
-
-
+ 
 selectors.searchForm.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
@@ -29,10 +26,9 @@ function onSearch(evt) {
 
 }
 
-
 async function fetchAndDisplayImages() {
     const searchQuery = selectors.searchForm.searchQuery.value.trim(); // Отримуємо значення з поля вводу
-    const imageListHTML = await fetchImages(searchQuery, selectors.page);
+    const imageListHTML = await fetchImages(searchQuery, currentPage);
 
     if (imageListHTML) {
         selectors.gallery.innerHTML = imageListHTML;
@@ -48,7 +44,7 @@ selectors.loadMoreBtn.addEventListener('click', onLoadMore);
 async function onLoadMore() {
     currentPage++; // Збільшуємо номер сторінки
     const searchQuery = selectors.searchForm.searchQuery.value.trim();
-    const additionalImagesHTML = await fetchImages(searchQuery, currentPage, imagesPerPage);
+    const additionalImagesHTML = await fetchImages(searchQuery, currentPage);
 
     if (additionalImagesHTML) {
         selectors.gallery.innerHTML += additionalImagesHTML; // Додаємо нові зображення до вже існуючих
@@ -64,6 +60,7 @@ async function onLoadMore() {
             top: cardHeight * 2,
             behavior: "smooth",
         });
+
     }
 }
 selectors.loadMoreBtn.addEventListener('click', onLoadMore);
