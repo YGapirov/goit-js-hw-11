@@ -43,10 +43,10 @@ async function onFormSubmit(evt) {
     // Вставляємо HTML-код зображень в галерею
     selectors.gallery.insertAdjacentHTML('beforeend', imgListHTML);
     
-    if (!lightBox) {
-        lightBox = new SimpleLightbox('.gallery a');
-    } else {
+    if (lightBox) {
         lightBox.refresh();
+    } else {
+        lightBox = new SimpleLightbox('.gallery a');
     }
 
     if (totalHits > 0) {
@@ -69,10 +69,10 @@ async function onLoadMore() {
         // Вставляємо HTML-код додаткових зображень в кінець галереї
         selectors.gallery.insertAdjacentHTML('beforeend', additionalImagesHTML);
 
-        if (!lightBox) {
-            lightBox = new SimpleLightbox('.gallery a');
-        } else {
+        if (lightBox) {
             lightBox.refresh();
+        } else {
+            lightBox = new SimpleLightbox('.gallery a');
         }
         // Прокручуємо сторінку плавно після завантаження нових зображень
         const { height: cardHeight } = document
