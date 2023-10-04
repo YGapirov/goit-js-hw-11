@@ -9,6 +9,8 @@ const imagesPerPage = 40; // Кількість зображень на стор
 let totalLoadedImagesCount = 0; // Лічильник завантажених зображень
 let searchQuery;
 let lightbox;
+let totalHits = 0;
+
 
 export const selectors = {
     searchForm: document.getElementById('search-form'),
@@ -26,7 +28,7 @@ async function onFormSubmit(evt) {
     selectors.loadMoreBtn.style.display = 'none';
     currentPage = 1;
     searchQuery = selectors.searchForm.searchQuery.value.trim(); // Отримуємо значення з поля вводу
-
+    
     if (!searchQuery) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px' });
         return;
@@ -36,14 +38,21 @@ async function onFormSubmit(evt) {
     selectors.gallery.innerHTML = '';
 
     const { hits, totalHits } = await fetchImages(searchQuery, currentPage);
-    totalLoadedImagesCount += hits.length;
+    // totalLoadedImagesCount += hits.length;
     const imgListHTML = createImgList(hits);
 
     // Вставляємо HTML-код зображень в галерею
     selectors.gallery.insertAdjacentHTML('beforeend', imgListHTML);
 
-    if (totalLoadedImagesCount < totalHits) {
+    // if (totalLoadedImagesCount < totalHits) {
+    //     selectors.loadMoreBtn.style.display = 'block';
+    // }
+    
+    if (totalHits > 0) {
         selectors.loadMoreBtn.style.display = 'block';
+        Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    } else {
+        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px' });
     }
      if (!lightbox) {
         lightbox = new SimpleLightbox('.gallery a');
@@ -74,8 +83,13 @@ async function onLoadMore() {
 
         // Приховуємо кнопку "Load More", якщо всі зображення завантажені
         if (totalLoadedImagesCount >= totalHits) {
-            selectors.loadMoreBtn.style.display = 'none';
+            
         }
+    } else {
+        // Якщо немає додаткових зображень, то також приховуємо кнопку "Load More"
+        selectors.loadMoreBtn.style.display = 'none';
+        Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+        
     }
 }
 
@@ -96,3 +110,31 @@ function createImgList(arr) {
 
     return imgListHTML;
 }
+
+
+// btn TOP
+const btnUp = {
+    el: document.querySelector('.btn-up'),
+    show() {
+      this.el.classList.remove('btn-up_hide');
+    },
+    hide() {
+      this.el.classList.add('btn-up_hide');
+    },
+    addEventListener() {      
+      window.addEventListener('scroll', () => {        
+        const scrollY = window.scrollY || document.documentElement.scrollTop;        
+        scrollY > 400 ? this.show() : this.hide();
+      });
+      
+      document.querySelector('.btn-up').onclick = () => {        
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+  
+  btnUp.addEventListener();
