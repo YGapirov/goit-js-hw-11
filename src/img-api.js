@@ -41,7 +41,7 @@ export const fetchImages = async (searchQuery, page) => {
         if (firstSearch) {
             
             Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-            firstSearch = false;
+            // firstSearch = false;
         }
 
         const imageListHTML = createImgList(data.hits); //отримуємо з api каталог img
