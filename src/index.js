@@ -6,14 +6,13 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 let currentPage = 1; // Початкова сторінка
 const imagesPerPage = 40; // Кількість зображень на сторінці
-
+let totalHits = 0;
 let searchQuery;
 let lightbox = new SimpleLightbox('.gallery a', {
     caption: true, 
     captionsData: 'alt',   
     captionDelay: 250,   
   });
-// let totalHits = 0;
 
 export const selectors = {
     searchForm: document.getElementById('search-form'),
@@ -39,18 +38,18 @@ async function onFormSubmit(evt) {
 
     // Очищаємо галерею перед новим пошуком
     selectors.gallery.innerHTML = '';
+    const { hits, totalHits: updatedTotalHits } = await fetchImages(searchQuery, currentPage); // Оновлення totalHits
 
-    const { hits, totalHits } = await fetchImages(searchQuery, currentPage);
-    console.log('currentPage:', currentPage); // Додайте цей рядок
-    console.log('totalHits:', totalHits); // Додайте цей рядок
-    
+    // Оновлюємо значення totalHits
+    totalHits = updatedTotalHits;
+        
     const imgListHTML = createImgList(hits);
     
     if (!totalHits) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px'});
         return;
     }
-    // Вставляємо HTML-код зображень в галерею
+    // Вставляємо розмітку зображень в галерею
     selectors.gallery.insertAdjacentHTML('beforeend', imgListHTML);
 
     if (totalHits > 0) {
@@ -68,7 +67,7 @@ async function onFormSubmit(evt) {
 }
 
 async function onLoadMore() {
-
+     
     currentPage++; // Збільшуємо номер сторінки
     const searchQuery = selectors.searchForm.searchQuery.value.trim();
     const { hits } = await fetchImages(searchQuery, currentPage);
@@ -78,7 +77,7 @@ async function onLoadMore() {
         selectors.gallery.insertAdjacentHTML('beforeend', additionalImagesHTML);
         lightbox.refresh();
 
-        // Прокручуємо сторінку плавно після завантаження нових зображень
+        // SLOW SCROLL
         const { height: cardHeight } = document
             .querySelector(".gallery")
             .firstElementChild.getBoundingClientRect();
@@ -88,10 +87,12 @@ async function onLoadMore() {
             behavior: "smooth",
         });
 
-        // if (currentPage >= Math.ceil(totalHits / imagesPerPage)) {
-        //     // selectors.loadMoreBtn.style.display = 'none';
-        //     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        // }
+        const displayedImagesCount = selectors.gallery.querySelectorAll('.photo-card').length; //відслідковуємо скільки фото вже відображено для load more
+
+        if (displayedImagesCount >= totalHits) {
+            selectors.loadMoreBtn.style.display = 'none';
+            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+        } 
         
     } 
        
