@@ -6,14 +6,14 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 let currentPage = 1; // Початкова сторінка
 const imagesPerPage = 40; // Кількість зображень на сторінці
-let totalLoadedImagesCount = 0; // Лічильник завантажених зображень
+
 let searchQuery;
 let lightbox = new SimpleLightbox('.gallery a', {
     caption: true, 
     captionsData: 'alt',   
     captionDelay: 250,   
   });
-let totalHits = 0;
+// let totalHits = 0;
 
 export const selectors = {
     searchForm: document.getElementById('search-form'),
@@ -41,10 +41,12 @@ async function onFormSubmit(evt) {
     selectors.gallery.innerHTML = '';
 
     const { hits, totalHits } = await fetchImages(searchQuery, currentPage);
-    totalLoadedImagesCount += hits.length;
+    console.log('currentPage:', currentPage); // Додайте цей рядок
+    console.log('totalHits:', totalHits); // Додайте цей рядок
+    
     const imgListHTML = createImgList(hits);
     
-    if (totalHits === 0) {
+    if (!totalHits) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px'});
         return;
     }
@@ -70,10 +72,8 @@ async function onLoadMore() {
     currentPage++; // Збільшуємо номер сторінки
     const searchQuery = selectors.searchForm.searchQuery.value.trim();
     const { hits } = await fetchImages(searchQuery, currentPage);
-    totalLoadedImagesCount += hits.length;
+    
     const additionalImagesHTML = createImgList(hits);
-
-    if (additionalImagesHTML) {
 
         selectors.gallery.insertAdjacentHTML('beforeend', additionalImagesHTML);
         lightbox.refresh();
@@ -88,11 +88,12 @@ async function onLoadMore() {
             behavior: "smooth",
         });
 
-        if (currentPage === Math.ceil(totalHits / imagesPerPage)) {
-            selectors.loadMoreBtn.style.display = 'none';
-        }
+        // if (currentPage >= Math.ceil(totalHits / imagesPerPage)) {
+        //     // selectors.loadMoreBtn.style.display = 'none';
+        //     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+        // }
         
-    } }   
+    } 
        
 function createImgList(arr) {
     const imgListHTML = arr.map(item => `
