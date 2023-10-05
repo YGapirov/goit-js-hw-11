@@ -13,7 +13,7 @@ let lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',   
     captionDelay: 250,   
   });
-
+let totalHits = 0;
 
 export const selectors = {
     searchForm: document.getElementById('search-form'),
@@ -33,7 +33,7 @@ async function onFormSubmit(evt) {
     searchQuery = selectors.searchForm.searchQuery.value.trim(); // Отримуємо значення з поля вводу
     
     if (!searchQuery) {
-        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px' });
+        Notiflix.Notify.failure("Please enter a search query.", { position: 'center-top', distance: '200px' });
         return;
     }
 
@@ -43,7 +43,11 @@ async function onFormSubmit(evt) {
     const { hits, totalHits } = await fetchImages(searchQuery, currentPage);
     totalLoadedImagesCount += hits.length;
     const imgListHTML = createImgList(hits);
-
+    
+    if (totalHits === 0) {
+        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.", { position: 'center-top', distance: '200px'});
+        return;
+    }
     // Вставляємо HTML-код зображень в галерею
     selectors.gallery.insertAdjacentHTML('beforeend', imgListHTML);
 
@@ -55,6 +59,7 @@ async function onFormSubmit(evt) {
     if (currentPage === Math.ceil(totalHits / imagesPerPage)) {
         selectors.loadMoreBtn.style.display = 'none';
         Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+
     }
     
     lightbox.refresh();
@@ -86,10 +91,7 @@ async function onLoadMore() {
         if (currentPage === Math.ceil(totalHits / imagesPerPage)) {
             selectors.loadMoreBtn.style.display = 'none';
         }
-        else {
-            selectors.loadMoreBtn.style.display = 'none';
-            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        }
+        
     } }   
        
 function createImgList(arr) {
