@@ -38,6 +38,7 @@ async function onFormSubmit(evt) {
 
     // Очищаємо галерею перед новим пошуком
     selectors.gallery.innerHTML = '';
+    try {
     const { hits, totalHits: updatedTotalHits } = await fetchImages(searchQuery, currentPage); // Оновлення totalHits
 
     // Оновлюємо значення totalHits
@@ -61,7 +62,7 @@ async function onFormSubmit(evt) {
         selectors.loadMoreBtn.style.display = 'none';
         Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
 
-    }
+    }} catch(error) {console.log(error)}
     
     lightbox.refresh();
 }
@@ -70,6 +71,7 @@ async function onLoadMore() {
      
     currentPage++; // Збільшуємо номер сторінки
     const searchQuery = selectors.searchForm.searchQuery.value.trim();
+    try {
     const { hits } = await fetchImages(searchQuery, currentPage);
     
     const additionalImagesHTML = createImgList(hits);
@@ -92,7 +94,7 @@ async function onLoadMore() {
         if (displayedImagesCount >= totalHits) {
             selectors.loadMoreBtn.style.display = 'none';
             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        } 
+        } } catch(error) {console.log(error)}
         
     } 
        
