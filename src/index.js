@@ -88,12 +88,17 @@ async function onLoadMore() {
             top: cardHeight * 2,
             behavior: "smooth",
         });
-
-        const displayedImagesCount = selectors.gallery.querySelectorAll('.photo-card').length; //відслідковуємо скільки фото вже відображено для load more
-
-        if (displayedImagesCount >= totalHits) {
+        
+        if (currentPage === Math.ceil(totalHits / imagesPerPage)) {
             selectors.loadMoreBtn.style.display = 'none';
             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+
+            // 2варіант перевірки залишку зображень
+        // const displayedImagesCount = selectors.gallery.querySelectorAll('.photo-card').length; //відслідковуємо скільки фото вже відображено для load more
+
+        // if (displayedImagesCount >= totalHits) {
+        //     selectors.loadMoreBtn.style.display = 'none';
+        //     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
         } } catch(error) {console.log(error)}
         
     } 
